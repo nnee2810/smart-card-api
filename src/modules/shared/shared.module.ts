@@ -18,11 +18,6 @@ import { PrismaModule } from "src/modules/prisma/prisma.module"
         JWT_ACCESS_TOKEN_EXPIRE: Joi.string().required(),
         JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
         JWT_REFRESH_TOKEN_EXPIRE: Joi.string().required(),
-
-        GOOGLE_CLIENT_ID: Joi.string().required(),
-        GOOGLE_CLIENT_SECRET: Joi.string().required(),
-
-        GOOGLE_TRANSLATE_API_KEY: Joi.string().required(),
       }),
     }),
     PrismaModule,
