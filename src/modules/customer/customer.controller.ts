@@ -109,7 +109,6 @@ export class CustomerController {
       !verifyMessage(message, {
         action: "unlink-card",
         targetId: id,
-        sourceId: "",
       }) ||
       !verifySignature(customer.publicKey, signature, message)
     )

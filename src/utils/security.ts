@@ -2,19 +2,17 @@ import crypto from "crypto"
 
 interface MessageData {
   action: string
-  sourceId: string
   targetId: string
 }
 
 export function verifyMessage(message: string, data: MessageData) {
   const messageParts = message.split("|")
   return !(
-    messageParts.length !== 4 ||
+    messageParts.length !== 3 ||
     messageParts[0] !== data.action ||
-    messageParts[1] !== data.sourceId ||
-    messageParts[2] !== data.targetId ||
-    isNaN(+messageParts[3]) ||
-    +messageParts[3] > new Date().getTime() - 5 * 1000
+    messageParts[1] !== data.targetId ||
+    isNaN(+messageParts[2]) ||
+    +messageParts[2] > new Date().getTime() - 5 * 1000
   )
 }
 
