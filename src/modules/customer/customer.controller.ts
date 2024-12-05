@@ -20,7 +20,7 @@ import {
 import { PaginationDto } from "src/dto/pagination.dto"
 import { LinkCardDto } from "src/modules/customer/dto/link-card.dto"
 import { UnlinkCardDto } from "src/modules/customer/dto/unlink-card.dto"
-import { verifySignature } from "src/utils/signature"
+import { verifyMessage, verifySignature } from "src/utils/security"
 
 @Controller("customer")
 export class CustomerController {
@@ -106,7 +106,11 @@ export class CustomerController {
     if (!customer) throw new NotFoundException()
 
     if (
-      message !== `unlink-card|${id}` ||
+      !verifyMessage(message, {
+        action: "unlink-card",
+        targetId: id,
+        sourceId: "",
+      }) ||
       !verifySignature(customer.publicKey, signature, message)
     )
       throw new UnauthorizedException()

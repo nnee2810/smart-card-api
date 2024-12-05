@@ -8,5 +8,5 @@ export class UnlinkCardDto {
 
   @ApiProperty()
   @IsString()
-  message: string // unlink-card|user-id|customer-id|nonce
+  message: string
 }
