@@ -2,14 +2,12 @@ import { Injectable } from "@nestjs/common"
 import { ConfigService } from "@nestjs/config"
 import { JwtService } from "@nestjs/jwt"
 import { EnvPayload } from "src/types/env"
-import { PrismaService } from "../prisma/prisma.service"
 
 @Injectable()
 export class AuthService {
   constructor(
     private configService: ConfigService<EnvPayload>,
     private jwtService: JwtService,
-    private prismaService: PrismaService,
   ) {}
 
   generateAccessToken(id: string) {

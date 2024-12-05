@@ -3,17 +3,26 @@ import {
   Controller,
   Delete,
   Get,
+  Inject,
   Param,
   Patch,
   Post,
+  Query,
 } from "@nestjs/common"
 import { CreateCustomerDto } from "./dto/create-customer.dto"
 import { UpdateCustomerDto } from "./dto/update-customer.dto"
-import { PrismaService } from "src/modules/prisma/prisma.service"
+import {
+  PRISMA_SERVICE,
+  PrismaService,
+} from "src/modules/prisma/prisma.service"
+import { PaginationDto } from "src/dto/pagination.dto"
 
 @Controller("customer")
 export class CustomerController {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    @Inject(PRISMA_SERVICE)
+    private prismaService: PrismaService,
+  ) {}
 
   @Post()
   create(@Body() data: CreateCustomerDto) {
@@ -23,7 +32,8 @@ export class CustomerController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query() query: PaginationDto) {
+    this.prismaService.customer
     return
   }
 

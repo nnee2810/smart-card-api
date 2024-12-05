@@ -1,8 +1,11 @@
-import { Injectable } from "@nestjs/common"
+import { Inject, Injectable } from "@nestjs/common"
 import { ConfigService } from "@nestjs/config"
 import { PassportStrategy } from "@nestjs/passport"
 import { ExtractJwt, Strategy } from "passport-jwt"
-import { PrismaService } from "src/modules/prisma/prisma.service"
+import {
+  PRISMA_SERVICE,
+  PrismaService,
+} from "src/modules/prisma/prisma.service"
 import { EnvPayload } from "src/types/env"
 import { RequestWithUser } from "src/types/request"
 import { Jwt } from "src/types/jwt"
@@ -14,6 +17,7 @@ export class AccessTokenStrategy extends PassportStrategy(
 ) {
   constructor(
     private configService: ConfigService<EnvPayload>,
+    @Inject(PRISMA_SERVICE)
     private prismaService: PrismaService,
   ) {
     super({

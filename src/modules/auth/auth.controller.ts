@@ -1,8 +1,17 @@
-import { Body, Controller, Post, UnauthorizedException } from "@nestjs/common"
+import {
+  Body,
+  Controller,
+  Inject,
+  Post,
+  UnauthorizedException,
+} from "@nestjs/common"
 import { ConfigService } from "@nestjs/config"
 import { JwtService } from "@nestjs/jwt"
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger"
-import { PrismaService } from "src/modules/prisma/prisma.service"
+import {
+  PRISMA_SERVICE,
+  PrismaService,
+} from "src/modules/prisma/prisma.service"
 import { EnvPayload } from "src/types/env"
 import { exclude } from "src/utils/exclude"
 import { Jwt } from "src/types/jwt"
@@ -18,6 +27,7 @@ export class AuthController {
   constructor(
     private configService: ConfigService<EnvPayload>,
     private jwtService: JwtService,
+    @Inject(PRISMA_SERVICE)
     private prismaService: PrismaService,
     private authService: AuthService,
   ) {}
