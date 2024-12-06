@@ -12,7 +12,7 @@ export function verifyMessage(message: string, data: MessageData) {
     messageParts[0] !== data.action ||
     messageParts[1] !== data.targetId ||
     isNaN(+messageParts[2]) ||
-    +messageParts[2] > new Date().getTime() - 5 * 1000
+    +messageParts[2] > new Date().getTime() - 1000
   )
 }
 

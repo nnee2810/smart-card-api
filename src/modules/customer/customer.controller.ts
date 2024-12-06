@@ -21,6 +21,7 @@ import { PaginationDto } from "src/dto/pagination.dto"
 import { LinkCardDto } from "src/modules/customer/dto/link-card.dto"
 import { UnlinkCardDto } from "src/modules/customer/dto/unlink-card.dto"
 import { verifyMessage, verifySignature } from "src/utils/security"
+import { ApiOperation } from "@nestjs/swagger"
 
 @Controller("customer")
 export class CustomerController {
@@ -29,6 +30,9 @@ export class CustomerController {
     private prismaService: PrismaService,
   ) {}
 
+  @ApiOperation({
+    summary: "Tạo khách hàng mới",
+  })
   @Post()
   create(@Body() data: CreateCustomerDto) {
     return this.prismaService.customer.create({
@@ -39,22 +43,29 @@ export class CustomerController {
     })
   }
 
+  @ApiOperation({
+    summary: "Lấy danh sách khách hàng",
+  })
   @Get()
   findAll(@Query() query: PaginationDto) {
-    return this.prismaService.customer
-      .paginate({
-        omit: {
-          publicKey: true,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      })
-      .withPages(query)
+    console.log("findAll")
+    return this.prismaService.customer.paginate({
+      ...query,
+      omit: {
+        publicKey: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    })
   }
 
+  @ApiOperation({
+    summary: "Lấy thông tin khách hàng",
+  })
   @Get(":id")
   findOne(@Param("id") id: string) {
+    console.log("findOne")
     return this.prismaService.customer.findUnique({
       omit: {
         publicKey: true,
@@ -63,6 +74,9 @@ export class CustomerController {
     })
   }
 
+  @ApiOperation({
+    summary: "Cập nhật thông tin khách hàng",
+  })
   @Patch(":id")
   update(@Param("id") id: string, @Body() data: UpdateCustomerDto) {
     return this.prismaService.customer.update({
@@ -74,6 +88,9 @@ export class CustomerController {
     })
   }
 
+  @ApiOperation({
+    summary: "Xóa khách hàng",
+  })
   @Delete(":id")
   delete(@Param("id") id: string) {
     return this.prismaService.customer.delete({
@@ -84,6 +101,9 @@ export class CustomerController {
     })
   }
 
+  @ApiOperation({
+    summary: "Liên kết thẻ với khách hàng",
+  })
   @Post(":id/link-card")
   linkCard(@Param("id") id: string, @Body() data: LinkCardDto) {
     return this.prismaService.customer.update({
@@ -95,6 +115,9 @@ export class CustomerController {
     })
   }
 
+  @ApiOperation({
+    summary: "Hủy liên kết thẻ với khách hàng",
+  })
   @Post(":id/unlink-card")
   async unlinkCard(
     @Param("id") id: string,

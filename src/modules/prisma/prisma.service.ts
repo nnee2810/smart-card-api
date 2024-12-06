@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
-import { pagination } from "prisma-extension-pagination"
 import { OnModuleInit } from "@nestjs/common"
+import paginate from "prisma-paginate"
 
 export const PRISMA_SERVICE = "PRISMA_SERVICE"
 
@@ -10,13 +10,7 @@ export class BasePrismaService extends PrismaClient implements OnModuleInit {
   }
 
   withExtensions() {
-    return this.$extends(
-      pagination({
-        pages: {
-          includePageCount: true,
-        },
-      }),
-    )
+    return this.$extends(paginate)
   }
 }
 
