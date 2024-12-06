@@ -32,8 +32,8 @@ export class CustomerController {
   @Post()
   create(@Body() data: CreateCustomerDto) {
     return this.prismaService.customer.create({
-      select: {
-        publicKey: false,
+      omit: {
+        publicKey: true,
       },
       data,
     })
@@ -43,8 +43,8 @@ export class CustomerController {
   findAll(@Query() query: PaginationDto) {
     return this.prismaService.customer
       .paginate({
-        select: {
-          publicKey: false,
+        omit: {
+          publicKey: true,
         },
         orderBy: {
           createdAt: "desc",
@@ -56,8 +56,8 @@ export class CustomerController {
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.prismaService.customer.findUnique({
-      select: {
-        publicKey: false,
+      omit: {
+        publicKey: true,
       },
       where: { id },
     })
@@ -66,8 +66,8 @@ export class CustomerController {
   @Patch(":id")
   update(@Param("id") id: string, @Body() data: UpdateCustomerDto) {
     return this.prismaService.customer.update({
-      select: {
-        publicKey: false,
+      omit: {
+        publicKey: true,
       },
       where: { id },
       data,
@@ -77,8 +77,8 @@ export class CustomerController {
   @Delete(":id")
   delete(@Param("id") id: string) {
     return this.prismaService.customer.delete({
-      select: {
-        publicKey: false,
+      omit: {
+        publicKey: true,
       },
       where: { id },
     })
@@ -87,8 +87,8 @@ export class CustomerController {
   @Post(":id/link-card")
   linkCard(@Param("id") id: string, @Body() data: LinkCardDto) {
     return this.prismaService.customer.update({
-      select: {
-        publicKey: false,
+      omit: {
+        publicKey: true,
       },
       where: { id },
       data,
@@ -115,8 +115,8 @@ export class CustomerController {
       throw new UnauthorizedException()
 
     return this.prismaService.customer.update({
-      select: {
-        publicKey: false,
+      omit: {
+        publicKey: true,
       },
       where: { id },
       data: {

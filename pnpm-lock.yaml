@@ -50,9 +50,6 @@ dependencies:
   prisma-extension-pagination:
     specifier: ^0.7.5
     version: 0.7.5(@prisma/client@6.0.0)
-  prisma-extension-soft-delete:
-    specifier: ^2.0.0
-    version: 2.0.0(@prisma/client@6.0.0)
   reflect-metadata:
     specifier: ^0.2.0
     version: 0.2.2
@@ -1171,10 +1168,6 @@ packages:
       node-fetch: 2.7.0
     transitivePeerDependencies:
       - encoding
-
-  /@open-draft/deferred-promise@2.2.0:
-    resolution: {integrity: sha512-CecwLWx3rhxVQF6V4bAgPS5t+So2sTbPgAzafKkVizyi7tlwpcFpdFqq+wqF2OwNBmqFuu6tOyouTuxgpMfzmA==}
-    dev: false
 
   /@pkgjs/parseargs@0.11.0:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -4620,31 +4613,12 @@ packages:
       react-is: 18.3.1
     dev: true
 
-  /prisma-extension-nested-operations@1.0.1(@prisma/client@6.0.0):
-    resolution: {integrity: sha512-mjMfVUplwCkrdClTqRP4793dOdPfT/H0zvV2uQ2R1BG2ZAqJ4LUEf//7f9LJdV5GhSOhp72w6b7DKJg1xIkgVA==}
-    peerDependencies:
-      '@prisma/client': '*'
-    dependencies:
-      '@open-draft/deferred-promise': 2.2.0
-      '@prisma/client': 6.0.0(prisma@6.0.0)
-      lodash: 4.17.21
-    dev: false
-
   /prisma-extension-pagination@0.7.5(@prisma/client@6.0.0):
     resolution: {integrity: sha512-tMcdOKryuqMrErsf14bmTKPtv25jJ0Cr1799dCr6AXZukrKf7Jz7MEtFD9VUuh+swsq1dYYJQVvmLUlzgAObyA==}
     peerDependencies:
       '@prisma/client': ^4.9.0 || ^5.0.0 || ^6.0.0
     dependencies:
       '@prisma/client': 6.0.0(prisma@6.0.0)
-    dev: false
-
-  /prisma-extension-soft-delete@2.0.0(@prisma/client@6.0.0):
-    resolution: {integrity: sha512-OAeKBpVwPkPCaFm5ELMxdqm5pqUdCLC1VyE120rNPxfWWwC+v29b6W6XhtrvTylZ2ydR5DfPm/eoI2hzRjZQdg==}
-    peerDependencies:
-      '@prisma/client': '*'
-    dependencies:
-      '@prisma/client': 6.0.0(prisma@6.0.0)
-      prisma-extension-nested-operations: 1.0.1(@prisma/client@6.0.0)
     dev: false
 
   /prisma@6.0.0:
