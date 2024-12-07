@@ -1,5 +1,6 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
@@ -22,6 +23,7 @@ import { LinkCardDto } from "src/modules/customer/dto/link-card.dto"
 import { UnlinkCardDto } from "src/modules/customer/dto/unlink-card.dto"
 import { verifyMessage, verifySignature } from "src/utils/security"
 import { ApiOperation } from "@nestjs/swagger"
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 
 @Controller("customer")
 export class CustomerController {
@@ -34,13 +36,21 @@ export class CustomerController {
     summary: "Tạo khách hàng mới",
   })
   @Post()
-  create(@Body() data: CreateCustomerDto) {
-    return this.prismaService.customer.create({
-      omit: {
-        publicKey: true,
-      },
-      data,
-    })
+  async create(@Body() data: CreateCustomerDto) {
+    try {
+      return await this.prismaService.customer.create({
+        omit: {
+          publicKey: true,
+        },
+        data,
+      })
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === "P2002") {
+          throw new ConflictException("Số điện thoại đã tồn tại")
+        }
+      }
+    }
   }
 
   @ApiOperation({
@@ -48,7 +58,6 @@ export class CustomerController {
   })
   @Get()
   findAll(@Query() query: PaginationDto) {
-    console.log("findAll")
     return this.prismaService.customer.paginate({
       ...query,
       omit: {
