@@ -1,8 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsString } from "class-validator"
+import { IsNumber } from "class-validator"
 
 export class LinkCardDto {
   @ApiProperty()
-  @IsString()
-  publicKey: string
+  @IsNumber(undefined, {
+    each: true,
+  })
+  publicKey: number[]
 }

@@ -74,7 +74,6 @@ export class CustomerController {
   })
   @Get(":id")
   findOne(@Param("id") id: string) {
-    console.log("findOne")
     return this.prismaService.customer.findUnique({
       omit: {
         publicKey: true,
@@ -113,21 +112,23 @@ export class CustomerController {
   @ApiOperation({
     summary: "Liên kết thẻ với khách hàng",
   })
-  @Post(":id/link-card")
+  @Post("link-card/:id")
   linkCard(@Param("id") id: string, @Body() data: LinkCardDto) {
     return this.prismaService.customer.update({
       omit: {
         publicKey: true,
       },
       where: { id },
-      data,
+      data: {
+        publicKey: data.publicKey.join(" "),
+      },
     })
   }
 
   @ApiOperation({
     summary: "Hủy liên kết thẻ với khách hàng",
   })
-  @Post(":id/unlink-card")
+  @Post("unlink-card/:id")
   async unlinkCard(
     @Param("id") id: string,
     @Body() { signature, message }: UnlinkCardDto,
