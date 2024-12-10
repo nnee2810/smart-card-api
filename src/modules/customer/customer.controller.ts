@@ -120,7 +120,6 @@ export class CustomerController {
       },
       where: { id },
       data: {
-        isLinkedToCard: true,
         publicKey: data.publicKey.join(" "),
       },
     })
@@ -154,7 +153,6 @@ export class CustomerController {
       },
       where: { id },
       data: {
-        isLinkedToCard: false,
         publicKey: null,
       },
     })

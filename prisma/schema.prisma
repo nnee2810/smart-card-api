@@ -40,11 +40,11 @@ model Customer {
   updatedAt DateTime @updatedAt
   isDeleted Boolean  @default(false)
 
-  name           String
-  phone          String  @unique
-  isLinkedToCard Boolean @default(false)
-  rewardPoints   Int     @default(0)
-  publicKey      String?
+  name         String
+  phone        String  @unique
+  avatar       String
+  rewardPoints Int     @default(0)
+  publicKey    String?
 
   @@map("customers")
 }
