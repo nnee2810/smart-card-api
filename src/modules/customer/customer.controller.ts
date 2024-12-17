@@ -157,4 +157,14 @@ export class CustomerController {
       },
     })
   }
+
+  @Get("phone/:phone")
+  getByPhone(@Param("phone") phone: string) {
+    return this.prismaService.customer.findFirst({
+      omit: {
+        publicKey: true,
+      },
+      where: { phone },
+    })
+  }
 }
