@@ -1,5 +1,11 @@
-import { ApiProperty } from "@nestjs/swagger"
-import { IsBase64, IsPhoneNumber, IsString } from "class-validator"
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
+import {
+  IsBase64,
+  IsNumber,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+} from "class-validator"
 
 export class CreateCustomerDto {
   @ApiProperty()
@@ -10,7 +16,15 @@ export class CreateCustomerDto {
   @IsPhoneNumber("VN")
   phone: string
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsBase64()
   avatar: string
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber(undefined, {
+    each: true,
+  })
+  publicKey: number[]
 }
