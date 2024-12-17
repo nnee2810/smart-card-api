@@ -73,13 +73,24 @@ export class CustomerController {
     summary: "Lấy thông tin khách hàng",
   })
   @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.prismaService.customer.findUnique({
+  async findOne(@Param("id") id: string) {
+    const customer = await this.prismaService.customer.findFirst({
       omit: {
         publicKey: true,
       },
-      where: { id },
+      where: {
+        OR: [
+          {
+            id,
+          },
+          {
+            phone: id,
+          },
+        ],
+      },
     })
+    if (!customer) throw new NotFoundException()
+    return customer
   }
 
   @ApiOperation({
@@ -155,16 +166,6 @@ export class CustomerController {
       data: {
         publicKey: null,
       },
-    })
-  }
-
-  @Get("phone/:phone")
-  getByPhone(@Param("phone") phone: string) {
-    return this.prismaService.customer.findFirst({
-      omit: {
-        publicKey: true,
-      },
-      where: { phone },
     })
   }
 }
