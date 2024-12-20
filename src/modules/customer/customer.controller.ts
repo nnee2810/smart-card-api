@@ -42,7 +42,7 @@ export class CustomerController {
         omit: {
           publicKey: true,
         },
-        data: { ...data, publicKey: data.publicKey?.join(" ") },
+        data,
       })
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
@@ -103,7 +103,7 @@ export class CustomerController {
         publicKey: true,
       },
       where: { id },
-      data: { ...data, publicKey: data.publicKey?.join(" ") },
+      data,
     })
   }
 
