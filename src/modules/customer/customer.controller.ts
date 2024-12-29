@@ -98,13 +98,21 @@ export class CustomerController {
   })
   @Patch(":id")
   update(@Param("id") id: string, @Body() data: UpdateCustomerDto) {
-    return this.prismaService.customer.update({
-      omit: {
-        publicKey: true,
-      },
-      where: { id },
-      data,
-    })
+    try {
+      return this.prismaService.customer.update({
+        omit: {
+          publicKey: true,
+        },
+        where: { id },
+        data,
+      })
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === "P2002") {
+          throw new ConflictException("Số điện thoại đã tồn tại")
+        }
+      }
+    }
   }
 
   @ApiOperation({
