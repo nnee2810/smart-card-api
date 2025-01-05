@@ -48,6 +48,8 @@ export class OrderController {
       ])
     )
       throw new UnauthorizedException()
-    return "ok roi ne"
+    return this.prismaService.order.create({
+      data,
+    })
   }
 }
