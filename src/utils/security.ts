@@ -1,4 +1,4 @@
-import crypto from "crypto"
+import * as crypto from "crypto"
 import * as forge from "node-forge"
 
 export function createPublicKey(value: Buffer<ArrayBufferLike>) {
@@ -19,11 +19,18 @@ export function createPublicKey(value: Buffer<ArrayBufferLike>) {
 
 export function verifySignature(
   publicKey: string,
-  signature: string,
-  message: string,
+  signature: number[],
+  data: number[],
 ) {
-  const verify = crypto.createVerify("SHA256")
-  verify.update(message)
-  verify.end()
-  return verify.verify(publicKey, signature)
+  return crypto.verify(
+    "sha1",
+    Buffer.from(data),
+    publicKey,
+    Buffer.from(signature),
+  )
+}
+
+export function encodeString(value: string) {
+  const encoder = new TextEncoder()
+  return Array.from(encoder.encode(value))
 }

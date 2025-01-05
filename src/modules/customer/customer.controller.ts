@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   Inject,
+  InternalServerErrorException,
   NotFoundException,
   Param,
   Patch,
@@ -51,6 +52,7 @@ export class CustomerController {
           throw new ConflictException("Số điện thoại đã tồn tại")
         }
       }
+      throw new InternalServerErrorException(error)
     }
   }
 
