@@ -1,4 +1,4 @@
-import { IsBoolean, IsInt, IsString, Min } from "class-validator"
+import { IsBoolean, IsInt, IsString } from "class-validator"
 import { ApiProperty } from "@nestjs/swagger"
 
 export class CreateOrderDto {
@@ -12,8 +12,11 @@ export class CreateOrderDto {
 
   @ApiProperty()
   @IsInt()
-  @Min(0)
-  rewardPoints: number
+  rewardPointsReceived: number
+
+  @ApiProperty()
+  @IsInt()
+  totalAmount: number
 
   @ApiProperty()
   @IsInt()

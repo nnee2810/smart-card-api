@@ -1,11 +1,6 @@
 import crypto from "crypto"
 import * as forge from "node-forge"
 
-interface MessageData {
-  action: string
-  targetId: string
-}
-
 export function createPublicKey(value: Buffer<ArrayBufferLike>) {
   const exponentLength = value.readUint16BE(0)
   const exponent = value.subarray(2, 2 + exponentLength)
@@ -20,17 +15,6 @@ export function createPublicKey(value: Buffer<ArrayBufferLike>) {
     new forge.jsbn.BigInteger(exponent.toString("hex"), 16),
   )
   return forge.pki.publicKeyToPem(publicKey)
-}
-
-export function verifyMessage(message: string, data: MessageData) {
-  const messageParts = message.split("|")
-  return !(
-    messageParts.length !== 3 ||
-    messageParts[0] !== data.action ||
-    messageParts[1] !== data.targetId ||
-    isNaN(+messageParts[2]) ||
-    +messageParts[2] > new Date().getTime() - 1000
-  )
 }
 
 export function verifySignature(

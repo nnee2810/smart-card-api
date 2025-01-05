@@ -10,7 +10,6 @@ import {
   Patch,
   Post,
   Query,
-  UnauthorizedException,
 } from "@nestjs/common"
 import { CreateCustomerDto } from "./dto/create-customer.dto"
 import { UpdateCustomerDto } from "./dto/update-customer.dto"
@@ -20,12 +19,7 @@ import {
 } from "src/modules/prisma/prisma.service"
 import { PaginationDto } from "src/dto/pagination.dto"
 import { LinkCardDto } from "src/modules/customer/dto/link-card.dto"
-import { UnlinkCardDto } from "src/modules/customer/dto/unlink-card.dto"
-import {
-  createPublicKey,
-  verifyMessage,
-  verifySignature,
-} from "src/utils/security"
+import { createPublicKey } from "src/utils/security"
 import { ApiOperation } from "@nestjs/swagger"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 
@@ -147,39 +141,6 @@ export class CustomerController {
       where: { id },
       data: {
         publicKey: data.publicKey.join(" "),
-      },
-    })
-  }
-
-  @ApiOperation({
-    summary: "Hủy liên kết thẻ với khách hàng",
-  })
-  @Post("unlink-card/:id")
-  async unlinkCard(
-    @Param("id") id: string,
-    @Body() { signature, message }: UnlinkCardDto,
-  ) {
-    const customer = await this.prismaService.customer.findUnique({
-      where: { id },
-    })
-    if (!customer) throw new NotFoundException()
-
-    if (
-      !verifyMessage(message, {
-        action: "unlink-card",
-        targetId: id,
-      }) ||
-      !verifySignature(customer.publicKey, signature, message)
-    )
-      throw new UnauthorizedException()
-
-    return this.prismaService.customer.update({
-      omit: {
-        publicKey: true,
-      },
-      where: { id },
-      data: {
-        publicKey: null,
       },
     })
   }
