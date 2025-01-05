@@ -21,7 +21,11 @@ import {
 import { PaginationDto } from "src/dto/pagination.dto"
 import { LinkCardDto } from "src/modules/customer/dto/link-card.dto"
 import { UnlinkCardDto } from "src/modules/customer/dto/unlink-card.dto"
-import { verifyMessage, verifySignature } from "src/utils/security"
+import {
+  createPublicKey,
+  verifyMessage,
+  verifySignature,
+} from "src/utils/security"
 import { ApiOperation } from "@nestjs/swagger"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 
@@ -42,7 +46,10 @@ export class CustomerController {
         omit: {
           publicKey: true,
         },
-        data,
+        data: {
+          ...data,
+          publicKey: createPublicKey(Buffer.from(data.publicKey)),
+        },
       })
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
