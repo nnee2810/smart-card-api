@@ -6,13 +6,13 @@ import {
   Post,
   UnauthorizedException,
 } from "@nestjs/common"
+import { ApiOperation } from "@nestjs/swagger"
+import { CreateOrderDto } from "src/modules/order/dto/create-order.dto"
 import {
   PRISMA_SERVICE,
   PrismaService,
 } from "src/modules/prisma/prisma.service"
-import { CreateOrderDto } from "src/modules/order/dto/create-order.dto"
 import { encodeString, verifySignature } from "src/utils/security"
-import { ApiOperation } from "@nestjs/swagger"
 
 @Controller("order")
 export class OrderController {
@@ -25,7 +25,7 @@ export class OrderController {
     summary: "Tạo đơn hàng",
   })
   @Post()
-  async createOrder(@Body() data: CreateOrderDto) {
+  async createOrder(@Body() { signature, ...data }: CreateOrderDto) {
     const customer = await this.prismaService.customer.findUnique({
       where: {
         id: data.customerId,
@@ -34,7 +34,7 @@ export class OrderController {
     if (!customer) throw new NotFoundException("Khách hàng không tồn tại")
     const separator = 0x7c
     if (
-      !verifySignature(customer.publicKey, data.signature, [
+      !verifySignature(customer.publicKey, signature, [
         data.useRewardPoint ? 1 : 0,
         separator,
         (data.rewardPointsReceived >> 8) & 0xff,
@@ -49,7 +49,10 @@ export class OrderController {
     )
       throw new UnauthorizedException()
     return this.prismaService.order.create({
-      data,
+      data: {
+        ...data,
+        timestamp: data.timestamp.toString(),
+      },
     })
   }
 }
