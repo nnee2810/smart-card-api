@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Get,
   Inject,
   NotFoundException,
   Post,
+  Query,
   UnauthorizedException,
 } from "@nestjs/common"
 import { ApiOperation } from "@nestjs/swagger"
@@ -13,6 +15,7 @@ import {
   PrismaService,
 } from "src/modules/prisma/prisma.service"
 import { encodeString, verifySignature } from "src/utils/security"
+import { PaginationDto } from "src/dto/pagination.dto"
 
 @Controller("order")
 export class OrderController {
@@ -25,7 +28,7 @@ export class OrderController {
     summary: "Tạo đơn hàng",
   })
   @Post()
-  async createOrder(@Body() { signature, ...data }: CreateOrderDto) {
+  async create(@Body() { signature, ...data }: CreateOrderDto) {
     const customer = await this.prismaService.customer.findUnique({
       where: {
         id: data.customerId,
@@ -52,6 +55,27 @@ export class OrderController {
       data: {
         ...data,
         timestamp: data.timestamp.toString(),
+      },
+    })
+  }
+
+  @ApiOperation({
+    summary: "Lấy danh sách đơn hàng",
+  })
+  @Get()
+  findAll(@Query() query: PaginationDto) {
+    return this.prismaService.order.paginate({
+      ...query,
+      include: {
+        customer: {
+          select: {
+            name: true,
+            phone: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     })
   }
