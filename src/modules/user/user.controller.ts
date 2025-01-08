@@ -1,9 +1,10 @@
-import { Controller, Get, Inject, UseGuards } from "@nestjs/common"
+import { Controller, Get, Inject, Query, UseGuards } from "@nestjs/common"
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger"
 import { CurrentUser } from "src/decorators/current-user.decorator"
 import { exclude } from "src/utils/exclude"
 import { PRISMA_SERVICE, PrismaService } from "../prisma/prisma.service"
 import { AccessTokenGuard } from "src/modules/auth/auth.guard"
+import { PaginationDto } from "src/dto/pagination.dto"
 
 @ApiTags("User")
 @ApiBearerAuth()
@@ -22,5 +23,23 @@ export class UserController {
       where: { id },
     })
     return exclude(user, ["password", "refreshToken"])
+  }
+
+  findAll(@Query() query: PaginationDto, @CurrentUser("id") id: string) {
+    return this.prismaService.user.paginate({
+      ...query,
+      where: {
+        NOT: {
+          id,
+        },
+      },
+      omit: {
+        password: true,
+        refreshToken: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    })
   }
 }
