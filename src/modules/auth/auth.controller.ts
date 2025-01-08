@@ -32,7 +32,7 @@ export class AuthController {
     private authService: AuthService,
   ) {}
 
-  @ApiOperation({ summary: "Đăng nhập " })
+  @ApiOperation({ summary: "Đăng nhập" })
   @Post("sign-in")
   async signIn(@Body() data: SignInDto) {
     const user = await this.prismaService.user.findUnique({
