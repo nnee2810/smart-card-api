@@ -1,8 +1,10 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Get,
   Inject,
+  InternalServerErrorException,
   Post,
   Query,
   UseGuards,
@@ -14,6 +16,7 @@ import { PRISMA_SERVICE, PrismaService } from "../prisma/prisma.service"
 import { AccessTokenGuard } from "src/modules/auth/auth.guard"
 import { PaginationDto } from "src/dto/pagination.dto"
 import { CreateUserDto } from "src/modules/user/dto/create-user.dto"
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 
 @ApiTags("User")
 @ApiBearerAuth()
@@ -25,19 +28,29 @@ export class UserController {
     private prismaService: PrismaService,
   ) {}
 
+  @ApiOperation({ summary: "Tạo người dùng mới" })
   @Post()
-  createUser(@Body() data: CreateUserDto) {
-    return this.prismaService.user.create({
-      data: {
-        ...data,
-        password:
-          "$2a$12$qgiQAgWP38cUsGJd49V0Uez26Y0oNSZzDEUqXGPBoPg1IbhsgD8OS",
-      },
-      omit: {
-        password: true,
-        refreshToken: true,
-      },
-    })
+  async createUser(@Body() data: CreateUserDto) {
+    try {
+      return await this.prismaService.user.create({
+        data: {
+          ...data,
+          password:
+            "$2a$12$qgiQAgWP38cUsGJd49V0Uez26Y0oNSZzDEUqXGPBoPg1IbhsgD8OS",
+        },
+        omit: {
+          password: true,
+          refreshToken: true,
+        },
+      })
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === "P2002") {
+          throw new ConflictException("Tên đăng nhập đã được sử dụng")
+        }
+      }
+      throw new InternalServerErrorException(error)
+    }
   }
 
   @ApiOperation({ summary: "Lấy profile người dùng hiện tại" })
@@ -49,6 +62,8 @@ export class UserController {
     return exclude(user, ["password", "refreshToken"])
   }
 
+  @ApiOperation({ summary: "Lấy danh sách người dùng" })
+  @Get()
   findAll(@Query() query: PaginationDto, @CurrentUser("id") id: string) {
     return this.prismaService.user.paginate({
       ...query,

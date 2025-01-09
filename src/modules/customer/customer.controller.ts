@@ -49,7 +49,7 @@ export class CustomerController {
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === "P2002") {
-          throw new ConflictException("Số điện thoại đã tồn tại")
+          throw new ConflictException("Số điện thoại đã được sử dụng")
         }
       }
       throw new InternalServerErrorException(error)
