@@ -95,11 +95,8 @@ export class UserController {
   ) {
     if (currentUserId === id)
       throw new ConflictException("Không thể xoá chính mình")
-    return this.prismaService.user.update({
+    return this.prismaService.user.delete({
       where: { id },
-      data: {
-        isDeleted: true,
-      },
       omit: {
         password: true,
         refreshToken: true,
