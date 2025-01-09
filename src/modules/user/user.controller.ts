@@ -2,9 +2,11 @@ import {
   Body,
   ConflictException,
   Controller,
+  Delete,
   Get,
   Inject,
   InternalServerErrorException,
+  Param,
   Post,
   Query,
   UseGuards,
@@ -71,6 +73,7 @@ export class UserController {
         NOT: {
           id,
         },
+        isDeleted: false,
       },
       omit: {
         password: true,
@@ -78,6 +81,22 @@ export class UserController {
       },
       orderBy: {
         createdAt: "desc",
+      },
+    })
+  }
+
+  @ApiOperation({ summary: "Xoá người dùng" })
+  @Delete(":id")
+  async deleteUser(
+    @Param("id") id: string,
+    @CurrentUser("id") currentUserId: string,
+  ) {
+    if (currentUserId === id)
+      throw new ConflictException("Không thể xoá chính mình")
+    return this.prismaService.user.update({
+      where: { id },
+      data: {
+        isDeleted: true,
       },
     })
   }
