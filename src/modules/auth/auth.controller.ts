@@ -19,6 +19,9 @@ import { AuthService } from "src/modules/auth/auth.service"
 import { RefreshTokenDto } from "src/modules/auth/dto/refresh-token.dto"
 import { SignInDto } from "src/modules/auth/dto/sign-in.dto"
 import * as bcrypt from "bcrypt"
+import { ChangePasswordDto } from "src/modules/auth/dto/change-password.dto"
+import { CurrentUser } from "src/decorators/current-user.decorator"
+import { User } from "@prisma/client"
 
 @ApiTags("Auth")
 @ApiBearerAuth()
@@ -91,5 +94,22 @@ export class AuthController {
     } catch (error) {
       throw new UnauthorizedException()
     }
+  }
+
+  @ApiOperation({ summary: "Đổi mật khẩu" })
+  @Post("change-password")
+  changePassword(@Body() data: ChangePasswordDto, @CurrentUser() user: User) {
+    if (!bcrypt.compareSync(data.currentPassword, user.password))
+      throw new UnauthorizedException()
+
+    const hashedPassword = bcrypt.hashSync(data.newPassword, 10)
+    return this.prismaService.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        password: hashedPassword,
+      },
+    })
   }
 }
