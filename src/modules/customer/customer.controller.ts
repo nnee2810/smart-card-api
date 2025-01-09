@@ -11,6 +11,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from "@nestjs/common"
 import { CreateCustomerDto } from "./dto/create-customer.dto"
 import { UpdateCustomerDto } from "./dto/update-customer.dto"
@@ -21,9 +22,13 @@ import {
 import { PaginationDto } from "src/dto/pagination.dto"
 import { LinkCardDto } from "src/modules/customer/dto/link-card.dto"
 import { createPublicKey } from "src/utils/security"
-import { ApiOperation } from "@nestjs/swagger"
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
+import { AccessTokenGuard } from "src/modules/auth/auth.guard"
 
+@ApiTags("Customer")
+@ApiBearerAuth()
+@UseGuards(AccessTokenGuard)
 @Controller("customer")
 export class CustomerController {
   constructor(

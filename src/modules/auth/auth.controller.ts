@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Inject,
   Post,
   UnauthorizedException,
+  UseGuards,
 } from "@nestjs/common"
 import { ConfigService } from "@nestjs/config"
 import { JwtService } from "@nestjs/jwt"
@@ -22,6 +24,7 @@ import * as bcrypt from "bcrypt"
 import { ChangePasswordDto } from "src/modules/auth/dto/change-password.dto"
 import { CurrentUser } from "src/decorators/current-user.decorator"
 import { User } from "@prisma/client"
+import { AccessTokenGuard } from "src/modules/auth/auth.guard"
 
 @ApiTags("Auth")
 @ApiBearerAuth()
@@ -97,10 +100,11 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: "Đổi mật khẩu" })
+  @UseGuards(AccessTokenGuard)
   @Post("change-password")
   changePassword(@Body() data: ChangePasswordDto, @CurrentUser() user: User) {
     if (!bcrypt.compareSync(data.currentPassword, user.password))
-      throw new UnauthorizedException()
+      throw new ForbiddenException()
 
     const hashedPassword = bcrypt.hashSync(data.newPassword, 10)
     return this.prismaService.user.update({

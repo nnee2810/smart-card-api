@@ -7,8 +7,9 @@ import {
   Post,
   Query,
   UnauthorizedException,
+  UseGuards,
 } from "@nestjs/common"
-import { ApiOperation } from "@nestjs/swagger"
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger"
 import { CreateOrderDto } from "src/modules/order/dto/create-order.dto"
 import {
   PRISMA_SERVICE,
@@ -16,7 +17,11 @@ import {
 } from "src/modules/prisma/prisma.service"
 import { encodeString, verifySignature } from "src/utils/security"
 import { PaginationDto } from "src/dto/pagination.dto"
+import { AccessTokenGuard } from "src/modules/auth/auth.guard"
 
+@ApiTags("Order")
+@ApiBearerAuth()
+@UseGuards(AccessTokenGuard)
 @Controller("order")
 export class OrderController {
   constructor(
