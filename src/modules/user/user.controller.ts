@@ -13,7 +13,6 @@ import {
 } from "@nestjs/common"
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger"
 import { CurrentUser } from "src/decorators/current-user.decorator"
-import { exclude } from "src/utils/exclude"
 import { PRISMA_SERVICE, PrismaService } from "../prisma/prisma.service"
 import { AccessTokenGuard } from "src/modules/auth/auth.guard"
 import { PaginationDto } from "src/dto/pagination.dto"
@@ -58,10 +57,13 @@ export class UserController {
   @ApiOperation({ summary: "Lấy profile người dùng hiện tại" })
   @Get("profile")
   async getProfile(@CurrentUser("id") id: string) {
-    const user = await this.prismaService.user.findUnique({
+    return this.prismaService.user.findUnique({
       where: { id },
+      omit: {
+        password: true,
+        refreshToken: true,
+      },
     })
-    return exclude(user, ["password", "refreshToken"])
   }
 
   @ApiOperation({ summary: "Lấy danh sách người dùng" })
@@ -97,6 +99,26 @@ export class UserController {
       where: { id },
       data: {
         isDeleted: true,
+      },
+      omit: {
+        password: true,
+        refreshToken: true,
+      },
+    })
+  }
+
+  @ApiOperation({ summary: "Reset mật khẩu" })
+  @Post("/reset-password/:id")
+  async resetPassword(@Param("id") id: string) {
+    return this.prismaService.user.update({
+      where: { id },
+      data: {
+        password:
+          "$2a$12$qgiQAgWP38cUsGJd49V0Uez26Y0oNSZzDEUqXGPBoPg1IbhsgD8OS",
+      },
+      omit: {
+        password: true,
+        refreshToken: true,
       },
     })
   }
